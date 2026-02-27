@@ -1,0 +1,63 @@
+type TestCase {
+  id: ID!
+  title: String!
+  description: String
+  purpose: String
+  preconditions: String
+  steps: String
+  expectedResult: String
+  status: TestStatus!
+  assignee: String
+  evidence: [String]
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum TestStatus {
+  NOT_EXECUTED
+  PASSED
+  FAILED
+  BLOCKED
+}
+
+type PairwiseResult {
+  id: ID!
+  factors: [String!]!
+  combinations: [[String!]!]!
+  createdAt: AWSDateTime!
+}
+
+type Query {
+  getTestCase(id: ID!): TestCase
+  listTestCases(status: TestStatus): [TestCase!]!
+  generatePairwise(factors: [[String!]!]!): PairwiseResult!
+}
+
+type Mutation {
+  createTestCase(input: CreateTestCaseInput!): TestCase!
+  updateTestCase(id: ID!, input: UpdateTestCaseInput!): TestCase!
+  deleteTestCase(id: ID!): Boolean!
+  updateTestStatus(id: ID!, status: TestStatus!): TestCase!
+  assignTestCase(id: ID!, assignee: String!): TestCase!
+}
+
+input CreateTestCaseInput {
+  title: String!
+  description: String
+  purpose: String
+  preconditions: String
+  steps: String
+  expectedResult: String
+  assignee: String
+}
+
+input UpdateTestCaseInput {
+  title: String
+  description: String
+  purpose: String
+  preconditions: String
+  steps: String
+  expectedResult: String
+  status: TestStatus
+  assignee: String
+}

@@ -1,0 +1,406 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.App {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.App-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  color: white;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.App-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.App-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.Tab-navigation {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.Tab-button {
+  flex: 1;
+  min-width: 150px;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: white;
+  color: #333;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.Tab-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.Tab-button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.App-main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.Loading {
+  text-align: center;
+  padding: 2rem;
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* Button Styles */
+.Button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.Button-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.Button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.Button-secondary {
+  background: white;
+  color: #333;
+  border: 2px solid #ddd;
+}
+
+.Button-secondary:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.Button-danger {
+  background: #f44336;
+  color: white;
+}
+
+.Button-danger:hover {
+  background: #da190b;
+}
+
+.Button-small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.Button-large {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+/* Form Styles */
+.TestCaseForm {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.TestCaseForm h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.FormGroup {
+  margin-bottom: 1.5rem;
+}
+
+.FormGroup label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.FormGroup input,
+.FormGroup textarea,
+.FormGroup select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.FormGroup input:focus,
+.FormGroup textarea:focus,
+.FormGroup select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Alert Styles */
+.Alert {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.Alert-success {
+  background: #4CAF50;
+  color: white;
+}
+
+/* List Styles */
+.TestCaseList {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.ListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.ListHeader h2 {
+  color: #333;
+}
+
+.StatsBar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.StatCard {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.StatLabel {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.StatValue {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.FilterBar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.FilterButton {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.FilterButton:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.FilterButton.active {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.TestCaseTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.TestCaseTable th {
+  background: #f5f5f5;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+}
+
+.TestCaseTable td {
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.TestCaseRow:hover {
+  background: #f9f9f9;
+}
+
+.StatusBadge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.EmptyState {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+}
+
+/* Pairwise Styles */
+.PairwiseGenerator {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.PairwiseGenerator h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.FactorsEditor {
+  margin-bottom: 2rem;
+}
+
+.FactorGroup {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #667eea;
+}
+
+.FactorLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.ValuesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ValueInput {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ValueInput input {
+  flex: 1;
+}
+
+.Results {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid #f0f0f0;
+}
+
+.ResultsInfo {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.ResultsTable {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.ResultsTable table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #f9f9f9;
+}
+
+.ResultsTable th {
+  background: #667eea;
+  color: white;
+  padding: 0.8rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.ResultsTable td {
+  padding: 0.8rem;
+  border-bottom: 1px solid #ddd;
+}
+
+@media (max-width: 768px) {
+  .App-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .Tab-navigation {
+    flex-direction: column;
+  }
+
+  .Tab-button {
+    min-width: unset;
+  }
+
+  .StatsBar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
