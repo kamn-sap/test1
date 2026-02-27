@@ -34,3 +34,94 @@
 | ファイル保存   | Amazon S3                           | テストのエビデンス画像や出力したExcel/CSVファイルの保管。                 |
 
 上記をインフラのコード化 (IaC)
+
+---
+
+## 🚀 クイックスタート
+
+ローカル環境でアプリケーションを実行するための手順です。
+
+### 前提条件
+
+- Docker & Docker Compose がインストールされていること
+- Node.js 18.x 以上
+- npm
+
+### セットアップ手順
+
+#### **ステップ 1: LocalStack を起動**
+
+```bash
+cd /workspaces/test1
+docker-compose up -d
+```
+
+起動状況確認：
+```bash
+docker-compose logs -f localstack
+```
+
+LocalStack が完全に起動するまで 30～60 秒待ちます。以下が表示されたら完了です：
+```
+Ready to accept connections
+```
+
+---
+
+#### **ステップ 2: インフラをデプロイ**
+
+別のターミナルで以下を実行：
+
+```bash
+cd /workspaces/test1/infra
+npm install
+npm run build
+npm run deploy:local
+```
+
+デプロイ完了時に以下のような出力が表示されます：
+```
+✓ Test1Stack
+Resources:
+  ...
+GraphQLEndpoint: https://xxxx.appsync-api.us-east-1.amazonaws.com/graphql
+```
+
+---
+
+#### **ステップ 3: React アプリを起動**
+
+別のターミナルで以下を実行：
+
+```bash
+cd /workspaces/test1/app
+npm install
+npm start
+```
+
+ブラウザが自動で開き、`http://localhost:3000` でアプリケーションが起動します。
+
+---
+
+### ✅ 動作確認
+
+アプリケーションが正常に起動すると、以下の3つのタブが表示されます：
+
+- 📋 **テストケース一覧** - 作成されたテストケースの管理
+- ➕ **新規作成** - 新しいテストケースの作成フォーム
+- 🔀 **ペアワイズ生成** - オールペア法によるテスト組み合わせ生成
+
+### 各サービスへのアクセス
+
+| サービス | URL | 用途 |
+|---------|-----|------|
+| React アプリ | http://localhost:3000 | テスト管理 UI |
+| DynamoDB Admin | http://localhost:8001 | データベース確認 |
+| LocalStack | http://localhost:4566 | AWS サービスエミュレーション |
+
+---
+
+## 📚 詳細ドキュメント
+
+- [ローカル開発ガイド](LOCAL_DEV_GUIDE.md) - セットアップの詳細手順とトラブルシューティング
+- [アーキテクチャ](ARCHITECTURE.md) - システム構成とファイル概要
