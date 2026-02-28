@@ -6,71 +6,48 @@
 
 ### 前提条件
 
-- Docker & Docker Compose
 - Node.js 18.x 以上
-- npm または yarn
-- AWS CLI (ローカルスタック用)
+- npm
+
+**注:** Docker & Docker Compose は不要です（iPad環境でも動作可能）
 
 ---
 
-## 📝 ステップ 1: LocalStack の起動
+## 📝 ステップ 1: モック GraphQL サーバーの起動
 
 ```bash
-# ルートディレクトリで実行
-docker-compose up -d
+# mock-server ディレクトリに移動
+cd mock-server
 
-# ログを確認
-docker-compose logs -f localstack
+# 依存パッケージをインストール
+npm install
+
+# 開発サーバーを起動（ホットリロード対応）
+npm run dev
+
+# または本番ビルド → 実行
+npm run build
+npm start
 ```
 
-LocalStack が起動し、ポート `4566` で利用可能になります。
+モックサーバーが起動し、GraphQL エンドポイント `http://localhost:4000/graphql` で利用可能になります。
 
-> オプション: DynamoDB Admin UI は `http://localhost:8001` でアクセス可能です。
+> 🌐 Apollo GraphQL Playground (`http://localhost:4000/graphql`) で対話的にクエリをテストできます
 
 ---
 
 ## 📝 ステップ 2: 環境変数の設定
 
-`.env.local` をアプリケーションのルートに作成：
+`.env.local` をアプリケーションのルート (`app/` ディレクトリ) に作成：
 
 ```bash
-# インフラ用
-export IS_LOCAL=true
-export AWS_DEFAULT_REGION=us-east-1
-export AWS_ACCESS_KEY_ID=test
-export AWS_SECRET_ACCESS_KEY=test
-
-# Optional for specific endpoints
-export LOCALSTACK_ENDPOINT=http://localhost:4566
+# フロントエンド用
+REACT_APP_API_ENDPOINT=http://localhost:4000/graphql
 ```
 
 ---
 
-## 📝 ステップ 3: インフラのデプロイ（ローカル）
-
-```bash
-cd infra
-
-# 依存パッケージをインストール
-npm install
-
-# CDK をコンパイル
-npm run build
-
-# LocalStack にデプロイ
-AWS_ENDPOINT_URL=http://localhost:4566 npm run cdk deploy --profile localstack
-```
-
-または、より簡単に：
-
-```bash
-# ローカル環境向けのデプロイスクリプト
-./scripts/deploy-local.sh
-```
-
----
-
-## 📝 ステップ 4: React フロントエンドの起動
+## 📝 ステップ 3: React フロントエンドの起動
 
 ```bash
 cd app
@@ -86,19 +63,11 @@ npm start
 
 ---
 
-## 🧪 ステップ 5: API の確認
+## 🧪 ステップ 4: GraphQL API の確認
 
-GraphQL Playground でクエリテスト：
+### GraphQL Playground でクエリテスト
 
-```bash
-# AppSync エンドポイント（ローカル）
-http://localhost:4566/graphql
-
-# または AWS AppSync コンソール
-# CDK の出力で確認できます
-```
-
-### サンプルクエリ：
+ブラウザで `http://localhost:4000/graphql` を開き、以下のクエリをテストできます：
 
 ```graphql
 query {
@@ -106,179 +75,164 @@ query {
     id
     title
     status
+    assignee
     createdAt
+    updatedAt
   }
 }
+```
 
+### テストケース作成の例
+
+```graphql
 mutation {
-  createTestCase(input: {
-    title: "ログイン機能のテスト"
-    purpose: "ログイン機能が正常に動作することを確認"
-    assignee: "田中太郎"
-  }) {
+  createTestCase(
+    title: "新規テストケース"
+    description: "テスト説明"
+    purpose: "目的"
+    assignee: "担当者"
+  ) {
     id
     title
     status
+    createdAt
   }
 }
 ```
 
----
-
-## 📊 DynamoDB の確認
-
-LocalStack が DynamoDB テーブルを自動作成しています。
-
-### テーブルの確認：
-
-```bash
-aws dynamodb list-tables \
-  --endpoint-url=http://localhost:4566 \
-  --region=us-east-1
-```
-
-### データの確認：
-
-```bash
-aws dynamodb scan \
-  --table-name TestCasesTable \
-  --endpoint-url=http://localhost:4566 \
-  --region=us-east-1
-```
-
-または DynamoDB Admin UI (`http://localhost:8001`) を使用。
-
----
-
-## 🔀 ペアワイズ生成テスト
-
-GraphQL で ペアワイズテスト生成をテスト：
+### ペアワイズ法の実行例
 
 ```graphql
-query {
-  generatePairwise(factors: [
-    ["Chrome", "Firefox", "Safari"]
-    ["Windows", "Mac", "Linux"]
-    ["日本語", "英語"]
-  ]) {
-    id
+mutation {
+  generatePairwise(
+    factors: [
+      ["Chrome", "Firefox", "Safari"]
+      ["Windows", "macOS", "Linux"]
+      ["English", "Japanese"]
+    ]
+  ) {
     combinations
+    pairsCovered
+    totalPairs
   }
 }
 ```
 
 ---
 
-## 🐛 トラブルシューティング
+## 💡 iPad環境での使用方法
 
-### LocalStack が起動しない
+### ローカルネットワークでの共有
+
+iPad上でアプリを開く場合、以下の手順を実行：
+
+1. **ローカルマシンのIPアドレスを確認**
 
 ```bash
-# ログ確認
-docker-compose logs localstack
+# Mac/Linux
+ifconfig | grep "inet " | grep -v 127.0.0.1
 
-# 再起動
-docker-compose restart localstack
+# Windows
+ipconfig
 ```
 
-### EADDRINUSE エラー（ポートが使用中）
+例：`192.168.0.100`
+
+2. **フロントエンドの起動時にホスト指定**
 
 ```bash
-# プロセスを確認
-lsof -i :4566
+cd app
+REACT_APP_API_ENDPOINT=http://192.168.0.100:4000/graphql npm start -- --host=0.0.0.0
+```
+
+3. **iPad のブラウザで以下URLにアクセス**
+
+```
+http://192.168.0.100:3000
+```
+
+### または、iPad上で Node.js を実行する場合
+
+- **A-Shell** アプリ（iPad 用ターミナル）で本セットアップを実行可能
+
+---
+
+## 🔄 開発ワークフロー
+
+```bash
+# ターミナル 1: モック GraphQL サーバー
+cd mock-server
+npm run dev
+
+# ターミナル 2: React フロントエンド
+cd app
+npm start
+
+# ターミナル 3: テスト（オプション）
+cd app
+npm test
+```
+
+---
+
+## 📌 トラブルシューティング
+
+### ポート 4000/3000 が既に使用されている場合
+
+```bash
+# macOS/Linux：該当プロセスを確認
+lsof -i :4000
 lsof -i :3000
 
-# 既存プロセスを停止
+# プロセスを終了（PIDを指定）
 kill -9 <PID>
 ```
 
-### GraphQL エンドポイントに接続できない
+### GraphQL エンドポイントに接続できない場合
+
+1. モックサーバーが起動しているか確認
 
 ```bash
-# LocalStack が完全に起動するまで待つ（30-60秒）
-# アプリケーションを再起動
-
-docker-compose logs localstack | grep -i "ready"
+curl http://localhost:4000/health
 ```
 
-### CDK デプロイエラー
+2. CORS 設定を確認（`mock-server/src/index.ts`）
+
+3. ファイアウォール設定を確認
+
+### npm install でエラーが出た場合
 
 ```bash
-# キャッシュをクリア
-rm -rf cdk.out
-npm run build
+# キャッシュクリア
+npm cache clean --force
+
+# node_modules を削除して再インストール
+rm -rf node_modules package-lock.json
+npm install
 ```
 
 ---
 
 ## 🌐 本番環境へのデプロイ
 
-ローカルでのテストが完了したら、本番環境にデプロイします。
+### 実際の AWS 環境を使用する場合
 
 ```bash
+# AWS CLI を設定
+aws configure
+
+# CDK をデプロイ
 cd infra
-
-# AWS 認証情報が設定されていることを確認
-aws sts get-caller-identity
-
-# 本番環境にデプロイ
-npm run deploy
-```
-
-> **注意：** 本番用の環境変数 (`AWS_ACCOUNT_ID`, 適切な `AWS_REGION`) が設定されていることを確認。
-
----
-
-## 📁 ファイル構成
-
-```
-test1/
-├── infra/                  # AWS CDK (Infrastructure as Code)
-│   ├── bin/
-│   │   └── infra.ts       # CDK アプリケーションエントリ
-│   ├── lib/
-│   │   └── infra-stack.ts # スタック定義
-│   ├── lambda/            # Lambda 関数コード
-│   └── schema.graphql     # GraphQL スキーマ
-├── app/                    # React フロントエンド
-│   ├── src/
-│   │   ├── components/    # React コンポーネント
-│   │   └── App.tsx        # メインアプリコンポーネント
-│   └── package.json
-├── docker-compose.yml      # LocalStack セットアップ
-└── README.md
+npm install
+npm run build
+npm run cdk deploy
 ```
 
 ---
 
-## 🔗 関連ドキュメント
+## 📚 参考資料
 
-- [AWS CDK ドキュメント](https://docs.aws.amazon.com/cdk/)
-- [LocalStack ドキュメント](https://docs.localstack.cloud/)
-- [GraphQL について](https://graphql.org/)
+- [Apollo Server ドキュメント](https://www.apollographql.com/docs/apollo-server/)
+- [GraphQL 公式ドキュメント](https://graphql.org/learn/)
 - [React ドキュメント](https://react.dev/)
-
----
-
-## ✅ チェックリスト
-
-ローカル開発を進める際の確認項目：
-
-- [ ] Docker がインストールされていることを確認
-- [ ] Docker Compose でサービスが起動
-- [ ] npm パッケージが正常にインストール
-- [ ] React アプリが `http://localhost:3000` で起動
-- [ ] GraphQL エンドポイントが応答
-- [ ] DynamoDB テーブルが作成
-- [ ] テストケース作成・取得が可能
-
----
-
-## 🆘 サポート
-
-問題が発生した場合：
-
-1. ログを確認
-2. Docker コンテナの再起動
-3. ポートが使用中でないことを確認
-4. キャッシュをクリア（`rm -rf node_modules cdk.out`）
+- [A-Shell（iPad用ターミナル）](https://github.com/holzschu/a-shell)
