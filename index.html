@@ -1,35 +1,33 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>北海道ツアー - 3D Interactive Map</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>北海道トラベルマップ - 3D Interactive Map</title>
+  <link rel="stylesheet" href="./src/styles.css" />
 </head>
 <body>
-    <div id="canvas-container"></div>
-    <div id="ui-panel">
-        <div id="info-box">
-            <h2 id="location-name">北海道へようこそ</h2>
-            <p id="location-description">マップをドラッグして回転、スクロールでズーム。スポットをクリック！</p>
-        </div>
-        <div id="controls">
-            <button id="reset-btn" class="btn">リセット</button>
-            <button id="toggle-effects" class="btn">エフェクト切替</button>
-            <button id="toggle-fog" class="btn">フォグ表示</button>
-        </div>
+  <div id="ui">
+    <div class="info-card">
+      <div class="eyebrow">北海道・旅の記録</div>
+      <h1 id="title">北海道へようこそ</h1>
+      <p id="description">
+        ひとつの地図に、北海道の"食欲・雪・温泉・観光地の余裕"を詰め込んだ謎の旅です。
+      </p>
+      <div id="spot-detail" class="spot-detail"></div>
     </div>
+    <div class="controls">
+      <button id="resetBtn" class="btn">🔄 リセット</button>
+      <button id="toggleFogBtn" class="btn">🌫️ 霧</button>
+      <button id="toggleThemeBtn" class="btn">🎨 気分</button>
+      <button id="toggleParticlesBtn" class="btn">✨ 粒子</button>
+    </div>
+    <div class="stats">
+      <span id="fps">FPS: 60</span>
+      <span id="marker-count">スポット: 7/7</span>
+    </div>
+  </div>
 
-    <!-- Three.js r186 -->
-    <script src="https://cdn.jsdelivr.net/npm/three@r186/build/three.min.js"></script>
-    <!-- Stats Monitor -->
-    <script src="https://cdn.jsdelivr.net/npm/three@r186/examples/js/libs/stats.min.js"></script>
-
-    <script src="config.js"></script>
-    <script src="hokkaido-places.js"></script>
-    <script src="terrain.js"></script>
-    <script src="interactions.js"></script>
-    <script src="effects.js"></script>
-    <script src="app.js"></script>
+  <script type="module" src="./src/main.js"></script>
 </body>
 </html>
