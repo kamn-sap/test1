@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北海道ツアー - 3D Interactive Map</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <div id="ui-panel">
+        <div id="info-box">
+            <h2 id="location-name">北海道へようこそ</h2>
+            <p id="location-description">マップをドラッグして回転、スクロールでズーム。スポットをクリック！</p>
+        </div>
+        <div id="controls">
+            <button id="reset-btn" class="btn">リセット</button>
+            <button id="toggle-effects" class="btn">エフェクト切替</button>
+            <button id="toggle-fog" class="btn">フォグ表示</button>
+        </div>
+    </div>
+
+    <!-- Three.js r186 -->
+    <script src="https://cdn.jsdelivr.net/npm/three@r186/build/three.min.js"></script>
+    <!-- Stats Monitor -->
+    <script src="https://cdn.jsdelivr.net/npm/three@r186/examples/js/libs/stats.min.js"></script>
+
+    <script src="config.js"></script>
+    <script src="hokkaido-places.js"></script>
+    <script src="terrain.js"></script>
+    <script src="interactions.js"></script>
+    <script src="effects.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
