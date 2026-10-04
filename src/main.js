@@ -5,6 +5,7 @@ import {
   createOceanBackground,
   createIsland,
   createCherryBlossoms,
+  createOtterFloat,
   createSalmonJump,
   createPotatoHarvest,
   createSnowCrystals,
@@ -65,6 +66,7 @@ const ocean = createOceanBackground(scene);
 
 const island = createIsland(scene);
 const cherryBlossoms = createCherryBlossoms(scene);
+const otterFloat = createOtterFloat(scene);
 const salmonJump = createSalmonJump(scene);
 const potatoHarvest = createPotatoHarvest(scene);
 const snowCrystals = createSnowCrystals(scene);
@@ -91,7 +93,7 @@ const SEASON_PRESETS = {
     fogDensity: 0.012,
     islandColor: 0x7bcf9d,
     topColor: 0x9ee1b1,
-    particleVisible: 'salmon',
+    particleVisible: 'otter',
     lightColor: 0xfffacd
   },
   autumn: {
@@ -100,7 +102,7 @@ const SEASON_PRESETS = {
     fogDensity: 0.015,
     islandColor: 0xb56d4a,
     topColor: 0xd98761,
-    particleVisible: 'potato',
+    particleVisible: 'salmon',
     lightColor: 0xff8c00
   },
   winter: {
@@ -143,12 +145,14 @@ function setSeason(seasonName) {
 
   // すべてのパーティクルを非表示
   cherryBlossoms.visible = false;
+  otterFloat.visible = false;
   salmonJump.visible = false;
   potatoHarvest.visible = false;
   snowCrystals.visible = false;
 
   // 季節に応じたパーティクルを表示
   if (preset.particleVisible === 'cherry') cherryBlossoms.visible = true;
+  else if (preset.particleVisible === 'otter') otterFloat.visible = true;
   else if (preset.particleVisible === 'salmon') salmonJump.visible = true;
   else if (preset.particleVisible === 'potato') potatoHarvest.visible = true;
   else if (preset.particleVisible === 'snow') snowCrystals.visible = true;
@@ -211,7 +215,25 @@ function animateParticles() {
     cherryBlossoms.geometry.attributes.position.needsUpdate = true;
   }
 
-  // 夏：鮭の跳ねる
+  // 夏：ラッコが浮く
+  if (otterFloat.visible) {
+    const positions = otterFloat.geometry.attributes.position.array;
+    const spawnTimes = otterFloat.geometry.userData.spawnTimes;
+    const count = positions.length / 3;
+
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      const lifetime = (t - spawnTimes[i]) % 6;
+
+      // 海面で浮いている（軽く波に揺られる）
+      positions[i3 + 1] = 0.5 + Math.sin(t * 0.8 + i) * 0.3 + Math.cos(t * 1.2 + i * 0.5) * 0.2;
+      positions[i3] += Math.sin(t * 0.5 + i) * 0.02;
+      positions[i3 + 2] += Math.cos(t * 0.6 + i) * 0.02;
+    }
+    otterFloat.geometry.attributes.position.needsUpdate = true;
+  }
+
+  // 秋：鮭が跳ねる
   if (salmonJump.visible) {
     const positions = salmonJump.geometry.attributes.position.array;
     const spawnTimes = salmonJump.geometry.userData.spawnTimes;

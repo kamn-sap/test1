@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 
-// 背景として海を作成
+// 背景として海を作成（北海道を囲む大きな海）
 export function createOceanBackground(scene) {
-  const geometry = new THREE.PlaneGeometry(300, 300, 100, 100);
+  const geometry = new THREE.PlaneGeometry(600, 600, 150, 150);
   const material = new THREE.MeshStandardMaterial({
     color: 0x0a5b7a,
     roughness: 0.7,
@@ -49,45 +49,48 @@ export function createWaveShader() {
   };
 }
 
-// 北海道の詳細な地図シルエット（より正確な形）
+// 北海道の詳細な地図シルエット（より正確で詳細な形）
 export function createIsland(scene) {
   const islandShape = new THREE.Shape();
-  // より詳細で北海道らしいシルエット
+  // より詳細で北海道らしいシルエット（稚内、旭川、札幌、帯広などの地理的位置を考慮）
   const islandPts = [
-    // 北西部
-    new THREE.Vector2(-44, -35),
-    new THREE.Vector2(-48, -32),
-    new THREE.Vector2(-50, -22),
-    new THREE.Vector2(-48, -12),
-    new THREE.Vector2(-44, -8),
-    // 北部（日本海側）
-    new THREE.Vector2(-38, -40),
-    new THREE.Vector2(-25, -46),
-    new THREE.Vector2(-8, -48),
-    new THREE.Vector2(8, -46),
-    new THREE.Vector2(22, -42),
-    new THREE.Vector2(32, -36),
-    // 北東部
-    new THREE.Vector2(44, -28),
-    new THREE.Vector2(48, -16),
-    new THREE.Vector2(50, -2),
-    // 東部太平洋側
-    new THREE.Vector2(48, 8),
-    new THREE.Vector2(44, 20),
-    new THREE.Vector2(38, 28),
-    new THREE.Vector2(30, 34),
-    // 南部
-    new THREE.Vector2(16, 38),
-    new THREE.Vector2(2, 40),
-    new THREE.Vector2(-10, 38),
-    new THREE.Vector2(-22, 34),
-    // 南西部
-    new THREE.Vector2(-32, 28),
-    new THREE.Vector2(-40, 18),
-    new THREE.Vector2(-46, 8),
-    new THREE.Vector2(-50, -2),
-    new THREE.Vector2(-50, -12),
-    new THREE.Vector2(-44, -35)
+    // 最北端：稚内周辺
+    new THREE.Vector2(-32, -48),
+    new THREE.Vector2(-24, -50),
+    new THREE.Vector2(-12, -51),
+    new THREE.Vector2(0, -50),
+    new THREE.Vector2(12, -48),
+    new THREE.Vector2(24, -45),
+    // 北東部：留萌から紋別
+    new THREE.Vector2(36, -42),
+    new THREE.Vector2(42, -38),
+    new THREE.Vector2(48, -30),
+    new THREE.Vector2(52, -18),
+    // 東部：北見、釧路方面
+    new THREE.Vector2(54, -5),
+    new THREE.Vector2(52, 8),
+    new THREE.Vector2(48, 18),
+    new THREE.Vector2(44, 28),
+    new THREE.Vector2(40, 35),
+    // 南東部：帯広、十勝
+    new THREE.Vector2(32, 38),
+    new THREE.Vector2(20, 42),
+    new THREE.Vector2(8, 44),
+    // 南部：札幌、新千歳
+    new THREE.Vector2(-6, 44),
+    new THREE.Vector2(-18, 42),
+    new THREE.Vector2(-28, 38),
+    // 南西部：函館、小樽方面
+    new THREE.Vector2(-36, 32),
+    new THREE.Vector2(-42, 24),
+    new THREE.Vector2(-46, 14),
+    new THREE.Vector2(-50, 2),
+    new THREE.Vector2(-52, -8),
+    // 北西部へ戻る
+    new THREE.Vector2(-50, -20),
+    new THREE.Vector2(-46, -32),
+    new THREE.Vector2(-40, -40),
+    new THREE.Vector2(-32, -48)
   ];
 
   islandShape.moveTo(islandPts[0].x, islandPts[0].y);
@@ -117,7 +120,7 @@ export function createIsland(scene) {
   scene.add(island);
 
   const islandTop = new THREE.Mesh(
-    new THREE.PlaneGeometry(110, 110, 150, 150),
+    new THREE.PlaneGeometry(130, 130, 150, 150),
     new THREE.MeshStandardMaterial({
       color: 0xa8e6b8,
       roughness: 0.95,
@@ -171,7 +174,39 @@ export function createCherryBlossoms(scene) {
   return particles;
 }
 
-// 夏：鮭が跳ねる
+// 夏：ラッコが浮く
+export function createOtterFloat(scene) {
+  const count = 15;
+  const positions = new Float32Array(count * 3);
+
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    positions[i3] = (Math.random() - 0.5) * 150;
+    positions[i3 + 1] = 0.5;
+    positions[i3 + 2] = (Math.random() - 0.5) * 150;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.userData.spawnTimes = new Float32Array(count).map(() => Math.random() * 6);
+
+  const mat = new THREE.PointsMaterial({
+    size: 1.8,
+    color: 0x8b6f47,
+    transparent: true,
+    opacity: 0.95,
+    depthWrite: false,
+    sizeAttenuation: true
+  });
+
+  const particles = new THREE.Points(geo, mat);
+  particles.visible = false;
+  scene.add(particles);
+
+  return particles;
+}
+
+// 秋：鮭が跳ねる
 export function createSalmonJump(scene) {
   const count = 25;
   const positions = new Float32Array(count * 3);

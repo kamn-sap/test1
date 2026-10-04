@@ -1,118 +1,313 @@
-# 北海道トラベルマップ 🗾
+# 🗾 北海道トラベルマップ - Interactive 3D Experience
 
-**Interactive 3D Hokkaido Map** using Three.js r186 with volumetric fog, 3DGS-inspired particles, and humorous UI.
+> 北海道の四季を舞台にした、リアルで美しい3Dインタラクティブマップ
 
-## Features
+---
 
-✨ **Three.js r186 Latest Technologies**
-- Volumetric fog shader with dynamic waves
-- 3DGS-inspired particle cloud (2400+ particles)
-- Physical material rendering with clearcoat effects
-- Real-time shadow mapping
+## ✨ 主な機能
 
-🎮 **Interactive Controls**
-- **Orbit Camera**: Drag to rotate, scroll to zoom
-- **Click Markers**: Select travel spots for details
-- **Theme Toggle**: Switch between classic and dream modes
-- **Fog Toggle**: Show/hide volumetric effects
-- **Particle Toggle**: Enable/disable particle effects
-- **Reset View**: Return to default camera position
+### 🎨 季節ごとの美しいビジュアル
 
-🌍 **7 Hokkaido Travel Spots**
-1. **札幌 (Sapporo)** - Ramen capital 🍜
-2. **小樽 (Otaru)** - Historic canal town 🌊
-3. **富良野 (Furano)** - Lavender fields 🌼
-4. **ニセコ (Niseko)** - Skiing paradise ⛷️
-5. **洞爺湖 (Toyako)** - Lake & hot springs 🚤
-6. **釧路 (Kushiro)** - Fresh seafood 🦐
-7. **網走 (Abashiri)** - Drift ice viewing 🧊
+| 季節 | 🌸春 | ☀️夏 | 🍂秋 | ❄️冬 |
+|------|------|------|------|------|
+| **景色** | 桜色の島 | 海色の島 | 秋色の島 | 雪色の島 |
+| **エフェクト** | 🌸 桜の花びら舞う | 🦦 ラッコが海に浮く | 🐟 鮭が川を遡上 | ❄️ 雪が舞う |
+| **光** | 柔らかい光 | 明るい光 | 温かい光 | 冷たい光 |
+| **霧** | 薄い霧 | 薄い霧 | 深い霧 | 深い霧 |
 
-## Installation
+### 🎮 インタラクティブなコントロール
+
+```
+┌─────────────────────────────────┐
+│     マウス操作                    │
+├─────────────────────────────────┤
+│ 🖱️  ドラッグ  →  3D回転           │
+│ 🔍  スクロール → ズーム in/out    │
+│ 📍  クリック  → スポット選択      │
+│ 🔄  リセット  → 初期位置に戻す    │
+│ 🌤️  四季    → 季節を変更         │
+└─────────────────────────────────┘
+```
+
+### 🚂 動的な交通システム
+
+- **電車** 🚆：北海道各地を結ぶカーブ状の線路を走行
+- **リアルな線路**：複数の観光地を繋ぐルート
+
+---
+
+## 🌍 北海道の観光地 - 7つの絶景スポット
+
+| # | 地名 | 絵文字 | 特徴 | 公式サイト |
+|---|------|-------|------|-----------|
+| 1️⃣ | **札幌** | 🍜 | ラーメン文化の中心地 | [sapporo.travel](https://www.sapporo.travel/) |
+| 2️⃣ | **小樽** | 🌊 | 歴史的な運河の町 | [otaru.lg.jp](https://www.city.otaru.lg.jp/) |
+| 3️⃣ | **富良野** | 🌼 | 紫色のラベンダー畑 | [furano.ne.jp](https://www.furano.ne.jp/) |
+| 4️⃣ | **ニセコ** | ⛷️ | スキーの国際的なメッカ | [niseko.gr.jp](https://niseko.gr.jp/) |
+| 5️⃣ | **洞爺湖** | 🚤 | 活火山と温泉リゾート | [toyako.hokkaido.jp](https://www.toyako.hokkaido.jp/) |
+| 6️⃣ | **釧路** | 🦐 | 新鮮な海の幸 | [kushiro.pref.hokkaido.lg.jp](https://www.kushiro.pref.hokkaido.lg.jp/) |
+| 7️⃣ | **網走** | 🧊 | 流氷の絶景 | [abashiri.jp](https://abashiri.jp/) |
+
+---
+
+## 🔧 インストール & セットアップ
+
+### 必要な環境
+- **Node.js** 16以上
+- **npm** またはお好みのパッケージマネージャー
+
+### インストール手順
 
 ```bash
+# 1. リポジトリをクローン
+git clone <repository-url>
+cd hokkaido-3d-map
+
+# 2. 依存パッケージをインストール
 npm install
+
+# 3. 開発サーバーを起動
 npm run dev
+
+# ✅ ブラウザで http://localhost:5173 を開く
 ```
 
-## Building
+### ビルド & デプロイ
 
 ```bash
+# プロダクションビルド
 npm run build
+
+# ビルドをプレビュー
+npm run preview
 ```
 
-## Project Structure
+---
+
+## 📁 プロジェクト構成
 
 ```
-├── index.html                 # Main entry point
-├── src/
-│   ├── main.js               # Application entry
-│   ├── styles.css            # Global styles
-│   ├── data/
-│   │   └── spots.js          # Hokkaido travel spots data
-│   ├── objects/
-│   │   ├── geometry.js       # 3D geometries (island, fog, particles, route)
-│   │   ├── lights.js         # Lighting setup
-│   │   └── markers.js        # Travel spot markers
-│   ├── interactions/
-│   │   └── handlers.js       # User interactions & camera control
-│   └── utils/
-│       └── stats.js          # Performance monitoring
-├── package.json
-└── vite.config.js
+hokkaido-3d-map/
+├── 📄 index.html                 # HTML エントリーポイント
+├── 📦 package.json               # プロジェクト設定
+├── 📄 vite.config.js             # Vite設定
+│
+└── 📂 src/
+    ├── 🚀 main.js                # アプリケーション メイン
+    ├── 🎨 styles.css             # グローバルスタイル
+    │
+    ├── 📂 data/
+    │   └── 🗺️  spots.js           # 観光地データ（7箇所）
+    │
+    ├── 📂 objects/
+    │   ├── 🏗️  geometry.js        # 3Dジオメトリ & エフェクト
+    │   ├── 💡 lights.js          # ライティング設定
+    │   └── 📍 markers.js         # 観光地マーカー
+    │
+    ├── 📂 interactions/
+    │   └── 🎮 handlers.js        # ユーザーインタラクション
+    │
+    └── 📂 utils/
+        └── 📊 stats.js          # パフォーマンス統計
 ```
 
-## Customization Guide
+---
 
-### Adding New Travel Spots
+## 🛠️ カスタマイズガイド
 
-Edit `src/data/spots.js`:
+### 🆕 新しい観光地を追加
+
+**ファイル:** `src/data/spots.js`
 
 ```javascript
 {
   id: 'newplace',
-  name: 'New Place',
+  name: '新しい地名',
   emoji: '📍',
   color: '#ff6b6b',
+  website: 'https://example.com',
   position: new THREE.Vector3(x, y, z),
-  description: 'Description of the place',
-  mood: 'Travel mood or feeling',
-  fact: 'Interesting fact'
+  description: '説明文',
+  mood: '旅の気分',
+  fact: '面白い事実'
 }
 ```
 
-### Changing Colors & Theme
+### 🎨 色とテーマをカスタマイズ
 
-Modify `src/interactions/handlers.js` in the `toggleTheme()` function to customize color schemes.
-
-### Adjusting Particle Count
-
-In `src/objects/geometry.js`, change `splatCount` in `createParticles()`:
+**ファイル:** `src/main.js` → `SEASON_PRESETS`
 
 ```javascript
-const splatCount = 3000; // Increase for more particles
+const SEASON_PRESETS = {
+  spring: {
+    background: 0x2a8fb8,    // 背景色（16進数）
+    islandColor: 0x9ad8a6,   // 島の色
+    topColor: 0xb9e8bf,      // 島の頂上色
+    // ... 他の設定
+  }
+};
 ```
 
-### Modifying Island Shape
+### 🚗 線路・電車の経路変更
 
-Edit the `islandPts` array in `src/objects/geometry.js` to reshape Hokkaido's outline.
+**ファイル:** `src/objects/geometry.js` → `createRailwayWithTrain()`
 
-## Performance Tips
+```javascript
+const railPoints = [
+  spots[0].position,  // 札幌
+  spots[1].position,  // 小樽
+  spots[4].position,  // 洞爺湖
+  // ... ルートを設定
+];
+```
 
-- Reduce `splatCount` if experiencing frame drops
-- Adjust `fogGeometry` detail (currently 32x32) for performance
-- Use `minDistance` and `maxDistance` in `src/main.js` to control camera range
+### ✨ パーティクル効果の調整
 
-## Browser Support
+**ファイル:** `src/objects/geometry.js`
 
-- Chrome/Edge: ✅ Full support
-- Firefox: ✅ Full support
-- Safari: ✅ WebGL 2 required
-- Mobile: ✅ Touch-friendly controls
+| 関数 | 説明 | パーティクル数 |
+|------|------|----------------|
+| `createCherryBlossoms()` | 桜の花びら | 1200 |
+| `createOtterFloat()` | ラッコ | 15 |
+| `createSalmonJump()` | 鮭が跳ねる | 25 |
+| `createSnowCrystals()` | 雪の結晶 | 1600 |
 
-## License
+---
 
-MIT
+## 🚀 パフォーマンス最適化
 
-## Made with ❤️
+### フレームレート低下時の対策
 
-Celebrating Hokkaido's beauty and travel spirit through interactive 3D visualization.
+```javascript
+// 1️⃣ パーティクル数を減らす
+const count = 800;  // 1200 → 800に変更
+
+// 2️⃣ 島の詳細度を下げる
+new THREE.PlaneGeometry(130, 130, 100, 100);  // 150→100に変更
+
+// 3️⃣ カメラの視野範囲を調整
+controls.minDistance = 25;  // 最小距離
+controls.maxDistance = 180; // 最大距離
+```
+
+---
+
+## 🌐 ブラウザ対応
+
+| ブラウザ | Chrome | Firefox | Safari | Edge |
+|---------|--------|---------|--------|------|
+| **対応** | ✅ 完全対応 | ✅ 完全対応 | ✅ WebGL2必須 | ✅ 完全対応 |
+
+### 📱 モバイル対応
+
+- ✅ タッチコントロール対応
+- ✅ レスポンシブデザイン
+- ✅ ピンチズーム対応
+
+---
+
+## 🎯 技術スタック
+
+| 技術 | バージョン | 用途 |
+|------|-----------|------|
+| **Three.js** | r186 | 3Dレンダリング |
+| **Vite** | 5.0+ | ビルドツール |
+| **WebGL 2** | - | グラフィックス |
+| **MapControls** | - | カメラ操作 |
+
+### 主な機能
+
+🔹 **物理ベースマテリアル (PBM)**
+- 現実的な光の反射・屈折
+
+🔹 **シャドウマッピング**
+- リアルな影の表現
+
+🔹 **パーティクルシステム**
+- 季節ごとの美しいエフェクト
+
+🔹 **Catmull-Rom曲線**
+- なめらかな電車の軌跡
+
+---
+
+## 📊 アーキテクチャ
+
+```
+┌─────────────────────────────────────┐
+│       index.html (UI層)             │
+└────────────────┬────────────────────┘
+                 │
+┌─────────────────▼────────────────────┐
+│   main.js (アプリケーション層)        │
+│  - シーン初期化                       │
+│  - 季節管理                           │
+│  - アニメーションループ               │
+└────────────────┬────────────────────┘
+                 │
+    ┌────────────┼────────────┐
+    │            │            │
+┌───▼──┐  ┌─────▼──┐  ┌──────▼───┐
+│geometry.js│lights.js│markers.js│
+│ 3D形状     │照明     │マーカー  │
+└──────┘  └────────┘  └────────┘
+    │
+┌───▼─────────────────────────┐
+│   handlers.js (入力層)       │
+│  - カメラ操作                │
+│  - クリック検出              │
+│  - イベント処理              │
+└─────────────────────────────┘
+```
+
+---
+
+## 🤝 コントリビューション
+
+このプロジェクトへの改善提案・バグ報告は大歓迎です！
+
+```bash
+# 1. ブランチを作成
+git checkout -b feature/amazing-feature
+
+# 2. 変更をコミット
+git commit -m "✨ Add amazing feature"
+
+# 3. プッシュ
+git push origin feature/amazing-feature
+
+# 4. プルリクエストを作成
+```
+
+---
+
+## 📝 ライセンス
+
+MIT License - 自由に使用・改変・配布できます
+
+---
+
+## 💝 謝辞
+
+このプロジェクトは以下にインスパイアされて作成されました：
+
+- 🏔️ 北海道の美しい自然
+- 🎨 Three.jsのすばらしいコミュニティ
+- 🌟 インタラクティブな体験への情熱
+
+---
+
+## 📞 お問い合わせ
+
+- 🐛 [Issue Report](https://github.com/kamn-sap/test1/issues)
+- 💬 [Discussion](https://github.com/kamn-sap/test1/discussions)
+
+---
+
+<div align="center">
+
+### ❤️ 北海道の四季の美しさを、3Dで体験しよう！
+
+**Made with ❤️ for Hokkaido lovers**
+
+</div>
