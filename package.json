@@ -11,7 +11,7 @@
     "deploy": "npm run build"
   },
   "dependencies": {
-    "three": "^r186"
+    "three": "r186"
   },
   "devDependencies": {
     "vite": "^5.0.0"
