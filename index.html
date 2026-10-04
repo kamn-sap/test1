@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>北海道トラベルマップ - 3D Interactive Map</title>
-  <link rel="stylesheet" href="./src/styles.css" />
-</head>
-<body>
-  <div id="ui">
-    <div class="info-card">
-      <div class="eyebrow">北海道・旅の記録</div>
-      <h1 id="title">北海道へようこそ</h1>
-      <p id="description">
-        ひとつの地図に、北海道の"食欲・雪・温泉・観光地の余裕"を詰め込んだ謎の旅です。
-      </p>
-      <div id="spot-detail" class="spot-detail"></div>
-    </div>
-    <div class="controls">
-      <button id="resetBtn" class="btn">🔄 リセット</button>
-      <button id="toggleFogBtn" class="btn">🌫️ 霧</button>
-      <button id="toggleThemeBtn" class="btn">🎨 気分</button>
-      <button id="toggleParticlesBtn" class="btn">✨ 粒子</button>
-    </div>
-    <div class="stats">
-      <span id="fps">FPS: 60</span>
-      <span id="marker-count">スポット: 7/7</span>
-    </div>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>北海道トラベルマップ - 3D Interactive Map</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div id="ui">
+      <div class="info-card">
+        <div class="eyebrow">北海道・旅の記録</div>
+        <h1 id="title">北海道へようこそ</h1>
+        <p id="description">
+          ひとつの地図に、北海道の食、雪、温泉、風景をまとめた旅の記録です。
+        </p>
+        <div id="spot-detail" class="spot-detail"></div>
+        <a id="spot-link" class="spot-link" href="#" target="_blank" rel="noreferrer">公式サイトを見る</a>
+      </div>
 
-  <script type="module" src="./src/main.js"></script>
-</body>
+      <div class="controls">
+        <button id="resetBtn" class="btn">↺ リセット</button>
+        <button id="toggleFogBtn" class="btn">🌫️ 霧</button>
+        <button id="toggleThemeBtn" class="btn">🌤️ 景色</button>
+        <button id="toggleParticlesBtn" class="btn">✨ 粒子</button>
+      </div>
+
+      <div class="stats">
+        <span id="fps">FPS: 60</span>
+        <span id="marker-count">スポット: 7/7</span>
+      </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
 </html>

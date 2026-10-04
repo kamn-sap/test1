@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { MapControls } from 'three/examples/jsm/controls/MapControls.js';
 import { HOKKAIDO_SPOTS } from './data/spots.js';
 import { createIsland, createFog, createParticles, createRoute } from './objects/geometry.js';
 import { setupLights } from './objects/lights.js';
@@ -7,15 +7,12 @@ import { createMarkers } from './objects/markers.js';
 import { setupInteractions } from './interactions/handlers.js';
 import { updateStats } from './utils/stats.js';
 
-// ============================================================
-// Scene Setup
-// ============================================================
 const canvas = document.createElement('canvas');
 document.body.insertBefore(canvas, document.body.firstChild);
 
-const renderer = new THREE.WebGLRenderer({ 
+const renderer = new THREE.WebGLRenderer({
   canvas,
-  antialias: true, 
+  antialias: true,
   alpha: true,
   powerPreference: 'high-performance'
 });
@@ -27,7 +24,7 @@ renderer.shadowMap.type = THREE.PCFShadowMap;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x091827);
-scene.fog = new THREE.FogExp2(0x9ad7ff, 0.035);
+scene.fog = new THREE.FogExp2(0x9ad7ff, 0.032);
 
 const camera = new THREE.PerspectiveCamera(
   45,
@@ -35,41 +32,35 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   500
 );
-camera.position.set(0, 36, 68);
+camera.position.set(30, 26, 74);
 
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new MapControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
+controls.enableRotate = true;
 controls.enablePan = true;
-controls.autoRotate = false;
-controls.minDistance = 28;
-controls.maxDistance = 140;
-controls.target.set(0, 10, 0);
+controls.enableZoom = true;
+controls.screenSpacePanning = true;
+controls.minDistance = 18;
+controls.maxDistance = 160;
+controls.maxPolarAngle = Math.PI * 0.48;
+controls.minPolarAngle = Math.PI * 0.18;
+controls.target.set(0, 8, 0);
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.55;
 
-// ============================================================
-// Lighting
-// ============================================================
 setupLights(scene);
 
-// ============================================================
-// Geometry & Objects
-// ============================================================
 const island = createIsland(scene);
 const { fog, fogMaterial } = createFog(scene);
 const { splatCloud, splatMat } = createParticles(scene);
 const route = createRoute(scene, HOKKAIDO_SPOTS);
 
-// ============================================================
-// Markers
-// ============================================================
 const markerGroup = new THREE.Group();
 scene.add(markerGroup);
 
 const markerMeshes = createMarkers(markerGroup, HOKKAIDO_SPOTS);
 
-// ============================================================
-// UI State
-// ============================================================
 const uiState = {
   fogEnabled: true,
   particlesEnabled: true,
@@ -77,10 +68,7 @@ const uiState = {
   currentSpot: HOKKAIDO_SPOTS[0]
 };
 
-// ============================================================
-// Interactions
-// ============================================================
-const { updateInfo, toggleTheme, toggleFog, toggleParticles } = setupInteractions(
+const { updateInfo, toggleTheme, toggleFog, toggleParticles, focusOnSpot } = setupInteractions(
   scene,
   markerGroup,
   camera,
@@ -91,18 +79,16 @@ const { updateInfo, toggleTheme, toggleFog, toggleParticles } = setupInteraction
   island
 );
 
-// ============================================================
-// Event Listeners
-// ============================================================
 const resetBtn = document.getElementById('resetBtn');
 const toggleFogBtn = document.getElementById('toggleFogBtn');
 const toggleThemeBtn = document.getElementById('toggleThemeBtn');
 const toggleParticlesBtn = document.getElementById('toggleParticlesBtn');
 
 resetBtn.addEventListener('click', () => {
-  camera.position.set(0, 36, 68);
-  controls.target.set(0, 10, 0);
+  camera.position.set(30, 26, 74);
+  controls.target.set(0, 8, 0);
   controls.update();
+  focusOnSpot(HOKKAIDO_SPOTS[0], false);
 });
 
 toggleFogBtn.addEventListener('click', () => {
@@ -125,9 +111,6 @@ window.addEventListener('resize', () => {
   renderer.setSize(width, height);
 });
 
-// ============================================================
-// Animation Loop
-// ============================================================
 const clock = new THREE.Clock();
 let frameCount = 0;
 let lastTime = performance.now();
@@ -135,39 +118,28 @@ let lastTime = performance.now();
 function animate() {
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime();
-  const dt = clock.getDelta();
 
-  // Fog animation
   fog.rotation.y = t * 0.08;
-  fog.rotation.x = Math.sin(t * 0.5) * 0.15;
+  fog.rotation.x = Math.sin(t * 0.5) * 0.18;
 
-  // Particle animation
-  splatCloud.rotation.y = t * 0.06;
+  splatCloud.rotation.y = t * 0.05;
   splatCloud.rotation.z = Math.sin(t * 0.7) * 0.08;
   splatCloud.position.y = 8 + Math.sin(t * 0.85) * 0.8;
 
-  // Marker animation
   markerMeshes.forEach((marker, index) => {
-    const bob = Math.sin(t * 1.6 + index * 0.5) * 0.7;
-    const wobble = Math.cos(t * 0.9 + index) * 0.15;
+    const bob = Math.sin(t * 1.5 + index * 0.6) * 0.8;
+    const sway = Math.cos(t * 0.9 + index) * 0.12;
     marker.position.y = marker.userData.spot.position.y + bob;
-    marker.rotation.z = wobble * 0.1;
+    marker.rotation.z = sway * 0.18;
   });
 
-  // Route animation
   route.rotation.y = t * 0.12;
-  route.position.y = Math.sin(t * 1.2) * 0.3;
+  route.position.y = Math.sin(t * 1.1) * 0.22;
 
-  // Update fog shader
   fogMaterial.uniforms.uTime.value = t;
-
-  // Controls update
   controls.update();
-
-  // Render
   renderer.render(scene, camera);
 
-  // FPS counter
   frameCount++;
   const currentTime = performance.now();
   if (currentTime >= lastTime + 1000) {
@@ -177,9 +149,9 @@ function animate() {
   }
 }
 
-// Initial info
 setTimeout(() => {
   updateInfo(HOKKAIDO_SPOTS[0]);
-}, 100);
+  focusOnSpot(HOKKAIDO_SPOTS[0], false);
+}, 120);
 
 animate();
