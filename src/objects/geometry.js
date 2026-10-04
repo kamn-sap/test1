@@ -150,6 +150,43 @@ export function createParticles(scene) {
   return { splatCloud, splatMat };
 }
 
+export function createSnowParticles(scene) {
+  const count = 1400;
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    positions[i3] = (Math.random() - 0.5) * 120;
+    positions[i3 + 1] = Math.random() * 40 + 12;
+    positions[i3 + 2] = (Math.random() - 0.5) * 120;
+
+    const color = new THREE.Color().setHSL(0.58, 0.2, 0.96);
+    colors[i3] = color.r;
+    colors[i3 + 1] = color.g;
+    colors[i3 + 2] = color.b;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+  const mat = new THREE.PointsMaterial({
+    size: 1.4,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.95,
+    depthWrite: false,
+    sizeAttenuation: true
+  });
+
+  const snow = new THREE.Points(geo, mat);
+  snow.visible = false;
+  scene.add(snow);
+
+  return snow;
+}
+
 export function createRoute(scene, spots) {
   const routePoints = [
     spots[0].position,

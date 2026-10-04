@@ -126,6 +126,34 @@ p {
   margin-bottom: 10px;
 }
 
+.season-controls {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  pointer-events: auto;
+  margin: 0 0 10px;
+}
+
+.season-btn {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(14, 23, 33, 0.8);
+  color: rgba(255,255,255,0.8);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.season-btn.active {
+  background: rgba(123, 228, 217, 0.18);
+  border-color: rgba(123, 228, 217, 0.45);
+  color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(123, 228, 217, 0.35);
+}
+
 .btn {
   appearance: none;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -140,14 +168,16 @@ p {
   backdrop-filter: blur(4px);
 }
 
-.btn:hover {
+.btn:hover,
+.season-btn:hover {
   transform: translateY(-2px);
   background: rgba(36, 48, 69, 0.95);
   border-color: rgba(255, 255, 255, 0.24);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.btn:active {
+.btn:active,
+.season-btn:active {
   transform: translateY(0);
 }
 
@@ -182,11 +212,13 @@ p {
     font-size: 0.9rem;
   }
 
-  .controls {
+  .controls,
+  .season-controls {
     gap: 6px;
   }
 
-  .btn {
+  .btn,
+  .season-btn {
     padding: 8px 12px;
     font-size: 0.75rem;
   }
