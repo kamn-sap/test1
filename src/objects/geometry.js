@@ -1,27 +1,40 @@
 import * as THREE from 'three';
 
+// 北海道の詳細なシルエット
 export function createIsland(scene) {
   const islandShape = new THREE.Shape();
+  // より詳細で北海道らしいシルエット
   const islandPts = [
-    new THREE.Vector2(-34, -28),
-    new THREE.Vector2(-28, -36),
-    new THREE.Vector2(-18, -42),
-    new THREE.Vector2(-5, -38),
-    new THREE.Vector2(10, -30),
-    new THREE.Vector2(18, -24),
-    new THREE.Vector2(30, -18),
-    new THREE.Vector2(36, -8),
-    new THREE.Vector2(34, 2),
-    new THREE.Vector2(28, 12),
-    new THREE.Vector2(22, 22),
-    new THREE.Vector2(12, 30),
-    new THREE.Vector2(2, 34),
-    new THREE.Vector2(-7, 32),
-    new THREE.Vector2(-18, 28),
-    new THREE.Vector2(-30, 18),
-    new THREE.Vector2(-38, 8),
-    new THREE.Vector2(-40, -4),
-    new THREE.Vector2(-34, -28)
+    // 北西部
+    new THREE.Vector2(-38, -32),
+    new THREE.Vector2(-42, -28),
+    new THREE.Vector2(-44, -18),
+    new THREE.Vector2(-40, -10),
+    // 北部
+    new THREE.Vector2(-30, -38),
+    new THREE.Vector2(-15, -44),
+    new THREE.Vector2(5, -42),
+    new THREE.Vector2(20, -35),
+    // 東北部
+    new THREE.Vector2(32, -26),
+    new THREE.Vector2(40, -14),
+    // 東部
+    new THREE.Vector2(42, 4),
+    new THREE.Vector2(38, 18),
+    // 南東部
+    new THREE.Vector2(28, 28),
+    new THREE.Vector2(16, 34),
+    // 南部
+    new THREE.Vector2(2, 36),
+    new THREE.Vector2(-8, 34),
+    new THREE.Vector2(-18, 30),
+    // 南西部
+    new THREE.Vector2(-32, 22),
+    new THREE.Vector2(-40, 12),
+    new THREE.Vector2(-44, 2),
+    new THREE.Vector2(-46, -8),
+    new THREE.Vector2(-42, -20),
+    new THREE.Vector2(-38, -32)
   ];
 
   islandShape.moveTo(islandPts[0].x, islandPts[0].y);
@@ -36,10 +49,10 @@ export function createIsland(scene) {
   islandGeo.center();
 
   const islandMat = new THREE.MeshPhysicalMaterial({
-    color: 0x7ccf99,
-    roughness: 0.88,
-    metalness: 0.08,
-    clearcoat: 0.5,
+    color: 0x8dd499,
+    roughness: 0.85,
+    metalness: 0.05,
+    clearcoat: 0.4,
     clearcoatRoughness: 0.8
   });
 
@@ -51,10 +64,10 @@ export function createIsland(scene) {
   scene.add(island);
 
   const islandTop = new THREE.Mesh(
-    new THREE.PlaneGeometry(80, 80, 100, 100),
+    new THREE.PlaneGeometry(100, 100, 120, 120),
     new THREE.MeshStandardMaterial({
-      color: 0x9ce6b4,
-      roughness: 1,
+      color: 0xa8e6b8,
+      roughness: 0.95,
       metalness: 0
     })
   );
@@ -68,103 +81,91 @@ export function createIsland(scene) {
   return island;
 }
 
-export function createFog(scene) {
-  const fogGeometry = new THREE.SphereGeometry(82, 32, 32);
-  const fogMaterial = new THREE.ShaderMaterial({
-    side: THREE.BackSide,
-    transparent: true,
-    depthWrite: false,
-    uniforms: {
-      uTime: { value: 0 },
-      uColor: { value: new THREE.Color(0x96d7ff) },
-      uAlpha: { value: 0.2 }
-    },
-    vertexShader: `
-      varying vec3 vPos;
-      void main() {
-        vPos = position;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      uniform float uTime;
-      uniform vec3 uColor;
-      uniform float uAlpha;
-      varying vec3 vPos;
+// 春：桜の花びら
+export function createCherryBlossoms(scene) {
+  const count = 800;
+  const positions = new Float32Array(count * 3);
+  const velocities = new Float32Array(count * 3);
 
-      float wave(float x, float y, float t) {
-        return sin(x * 2.2 + t * 1.1) * sin(y * 2.8 - t * 1.3) * sin((x + y) * 1.7 + t);
-      }
-
-      void main() {
-        float n = wave(vPos.x, vPos.y, uTime) * 0.5 + 0.5;
-        float alpha = smoothstep(0.2, 1.0, n);
-        gl_FragColor = vec4(uColor, alpha * uAlpha);
-      }
-    `
-  });
-
-  const fog = new THREE.Mesh(fogGeometry, fogMaterial);
-  scene.add(fog);
-
-  return { fog, fogMaterial };
-}
-
-export function createParticles(scene) {
-  const splatCount = 1800;
-  const splatPositions = new Float32Array(splatCount * 3);
-  const splatColors = new Float32Array(splatCount * 3);
-
-  for (let i = 0; i < splatCount; i++) {
+  for (let i = 0; i < count; i++) {
     const i3 = i * 3;
-    const x = (Math.random() - 0.5) * 90;
-    const y = (Math.random() - 0.5) * 26 + 10;
-    const z = (Math.random() - 0.5) * 90;
+    positions[i3] = (Math.random() - 0.5) * 100;
+    positions[i3 + 1] = Math.random() * 50 + 5;
+    positions[i3 + 2] = (Math.random() - 0.5) * 100;
 
-    splatPositions[i3] = x;
-    splatPositions[i3 + 1] = y;
-    splatPositions[i3 + 2] = z;
-
-    const color = new THREE.Color().setHSL(0.53 + Math.random() * 0.08, 0.6, 0.65);
-    splatColors[i3] = color.r;
-    splatColors[i3 + 1] = color.g;
-    splatColors[i3 + 2] = color.b;
+    velocities[i3] = (Math.random() - 0.5) * 0.08;
+    velocities[i3 + 1] = -0.12 - Math.random() * 0.06;
+    velocities[i3 + 2] = (Math.random() - 0.5) * 0.08;
   }
 
-  const splatGeo = new THREE.BufferGeometry();
-  splatGeo.setAttribute('position', new THREE.BufferAttribute(splatPositions, 3));
-  splatGeo.setAttribute('color', new THREE.BufferAttribute(splatColors, 3));
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.userData.velocities = velocities;
 
-  const splatMat = new THREE.PointsMaterial({
-    size: 1.1,
-    vertexColors: true,
+  const mat = new THREE.PointsMaterial({
+    size: 0.8,
+    color: 0xf5a7d8,
     transparent: true,
-    opacity: 0.7,
+    opacity: 0.8,
     depthWrite: false,
     sizeAttenuation: true
   });
 
-  const splatCloud = new THREE.Points(splatGeo, splatMat);
-  scene.add(splatCloud);
+  const particles = new THREE.Points(geo, mat);
+  particles.visible = false;
+  scene.add(particles);
 
-  return { splatCloud, splatMat };
+  return particles;
 }
 
-export function createSnowParticles(scene) {
-  const count = 1400;
+// 夏：鮭が跳ねる
+export function createSalmonJump(scene) {
+  const count = 20;
+  const positions = new Float32Array(count * 3);
+
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    positions[i3] = (Math.random() - 0.5) * 80;
+    positions[i3 + 1] = 2;
+    positions[i3 + 2] = (Math.random() - 0.5) * 80;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.userData.spawnTimes = new Float32Array(count).map(() => Math.random() * 4);
+
+  const mat = new THREE.PointsMaterial({
+    size: 1.2,
+    color: 0xff6b4a,
+    transparent: true,
+    opacity: 0.85,
+    depthWrite: false,
+    sizeAttenuation: true
+  });
+
+  const particles = new THREE.Points(geo, mat);
+  particles.visible = false;
+  scene.add(particles);
+
+  return particles;
+}
+
+// 秋：ジャガイモ収穫（茶色い粒子）
+export function createPotatoHarvest(scene) {
+  const count = 600;
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
 
   for (let i = 0; i < count; i++) {
     const i3 = i * 3;
-    positions[i3] = (Math.random() - 0.5) * 120;
-    positions[i3 + 1] = Math.random() * 40 + 12;
-    positions[i3 + 2] = (Math.random() - 0.5) * 120;
+    positions[i3] = (Math.random() - 0.5) * 100;
+    positions[i3 + 1] = Math.random() * 40 + 3;
+    positions[i3 + 2] = (Math.random() - 0.5) * 100;
 
-    const color = new THREE.Color().setHSL(0.58, 0.2, 0.96);
-    colors[i3] = color.r;
-    colors[i3 + 1] = color.g;
-    colors[i3 + 2] = color.b;
+    const c = new THREE.Color().setHSL(0.08, 0.65, 0.45);
+    colors[i3] = c.r;
+    colors[i3 + 1] = c.g;
+    colors[i3 + 2] = c.b;
   }
 
   const geo = new THREE.BufferGeometry();
@@ -172,23 +173,61 @@ export function createSnowParticles(scene) {
   geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
   const mat = new THREE.PointsMaterial({
-    size: 1.4,
+    size: 1.0,
     vertexColors: true,
+    transparent: true,
+    opacity: 0.7,
+    depthWrite: false,
+    sizeAttenuation: true
+  });
+
+  const particles = new THREE.Points(geo, mat);
+  particles.visible = false;
+  scene.add(particles);
+
+  return particles;
+}
+
+// 冬：雪の結晶
+export function createSnowCrystals(scene) {
+  const count = 1200;
+  const positions = new Float32Array(count * 3);
+  const velocities = new Float32Array(count * 3);
+
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    positions[i3] = (Math.random() - 0.5) * 110;
+    positions[i3 + 1] = Math.random() * 50 + 5;
+    positions[i3 + 2] = (Math.random() - 0.5) * 110;
+
+    velocities[i3] = (Math.random() - 0.5) * 0.04;
+    velocities[i3 + 1] = -0.15 - Math.random() * 0.05;
+    velocities[i3 + 2] = (Math.random() - 0.5) * 0.04;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.userData.velocities = velocities;
+
+  const mat = new THREE.PointsMaterial({
+    size: 1.2,
+    color: 0xffffff,
     transparent: true,
     opacity: 0.95,
     depthWrite: false,
     sizeAttenuation: true
   });
 
-  const snow = new THREE.Points(geo, mat);
-  snow.visible = false;
-  scene.add(snow);
+  const particles = new THREE.Points(geo, mat);
+  particles.visible = false;
+  scene.add(particles);
 
-  return snow;
+  return particles;
 }
 
-export function createRoute(scene, spots) {
-  const routePoints = [
+// 線路と電車
+export function createRailwayWithTrain(scene, spots) {
+  const railPoints = [
     spots[0].position,
     spots[1].position,
     spots[4].position,
@@ -197,20 +236,39 @@ export function createRoute(scene, spots) {
     spots[5].position
   ];
 
-  const routeCurve = new THREE.CatmullRomCurve3(routePoints);
-  const routeGeometry = new THREE.TubeGeometry(routeCurve, 120, 0.35, 14, false);
-  const routeMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffd166,
-    emissive: 0xffb703,
-    emissiveIntensity: 0.65,
-    transparent: true,
-    opacity: 0.72
+  const railCurve = new THREE.CatmullRomCurve3(railPoints);
+
+  // 線路
+  const railGeometry = new THREE.TubeGeometry(railCurve, 200, 0.25, 8, false);
+  const railMaterial = new THREE.MeshStandardMaterial({
+    color: 0x8b7355,
+    emissive: 0x4a3c2a,
+    emissiveIntensity: 0.3,
+    roughness: 0.8
   });
 
-  const route = new THREE.Mesh(routeGeometry, routeMaterial);
-  route.castShadow = true;
-  route.receiveShadow = true;
-  scene.add(route);
+  const rail = new THREE.Mesh(railGeometry, railMaterial);
+  rail.castShadow = true;
+  rail.receiveShadow = true;
+  scene.add(rail);
 
-  return route;
+  // 電車（小さいボックス）
+  const trainGeometry = new THREE.BoxGeometry(0.6, 0.8, 1.2);
+  const trainMaterial = new THREE.MeshStandardMaterial({
+    color: 0xff6b35,
+    emissive: 0xff6b35,
+    emissiveIntensity: 0.4,
+    metalness: 0.6
+  });
+
+  const train = new THREE.Mesh(trainGeometry, trainMaterial);
+  train.castShadow = true;
+  scene.add(train);
+
+  // 電車の初期位置
+  const trainPos = railCurve.getPoint(0);
+  train.position.copy(trainPos);
+  train.position.y += 0.5;
+
+  return { rail, train, railCurve };
 }
