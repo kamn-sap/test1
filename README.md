@@ -40,13 +40,13 @@
 
 | # | 地名 | 絵文字 | 特徴 | 公式サイト |
 |---|------|-------|------|-----------|
-| 1️⃣ | **札幌** | 🍜 | ラーメン文化の中心地 | [sapporo.travel](https://www.sapporo.travel/) |
+| 1️⃣ | **札幌** | 🍜 | ラーメン文化の中心地 | [札幌市公式](https://www.city.sapporo.jp/) |
 | 2️⃣ | **小樽** | 🌊 | 歴史的な運河の町 | [otaru.lg.jp](https://www.city.otaru.lg.jp/) |
-| 3️⃣ | **富良野** | 🌼 | 紫色のラベンダー畑 | [furano.ne.jp](https://www.furano.ne.jp/) |
-| 4️⃣ | **ニセコ** | ⛷️ | スキーの国際的なメッカ | [niseko.gr.jp](https://niseko.gr.jp/) |
-| 5️⃣ | **洞爺湖** | 🚤 | 活火山と温泉リゾート | [toyako.hokkaido.jp](https://www.toyako.hokkaido.jp/) |
-| 6️⃣ | **釧路** | 🦐 | 新鮮な海の幸 | [kushiro.pref.hokkaido.lg.jp](https://www.kushiro.pref.hokkaido.lg.jp/) |
-| 7️⃣ | **網走** | 🧊 | 流氷の絶景 | [abashiri.jp](https://abashiri.jp/) |
+| 3️⃣ | **富良野** | 🌼 | 紫色のラベンダー畑 | [富良野市公式](https://www.city.furano.hokkaido.jp/) |
+| 4️⃣ | **ニセコ** | ⛷️ | スキーの国際的なメッカ | [ニセコ町公式](https://www.town.niseko.lg.jp/) |
+| 5️⃣ | **洞爺湖** | 🚤 | 活火山と温泉リゾート | [洞爺湖町公式](https://www.town.toyako.hokkaido.jp/) |
+| 6️⃣ | **釧路** | 🦐 | 新鮮な海の幸 | [釧路市公式](https://www.city.kushiro.lg.jp/) |
+| 7️⃣ | **網走** | 🧊 | 流氷の絶景 | [網走市公式](https://www.city.abashiri.hokkaido.jp/) |
 
 ---
 
@@ -210,8 +210,8 @@ controls.maxDistance = 180; // 最大距離
 
 | 技術 | バージョン | 用途 |
 |------|-----------|------|
-| **Three.js** | r186 | 3Dレンダリング |
-| **Vite** | 5.0+ | ビルドツール |
+| **Three.js** | r187 | 3Dレンダリング |
+| **Vite** | 8.3+ | ビルドツール |
 | **WebGL 2** | - | グラフィックス |
 | **MapControls** | - | カメラ操作 |
 
