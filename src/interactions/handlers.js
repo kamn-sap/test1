@@ -1,6 +1,13 @@
 import * as THREE from 'three';
 
-export function setupInteractions(scene, markerGroup, camera, controls, uiState, island) {
+const SEASON_LABELS = {
+  spring: '春',
+  summer: '夏',
+  autumn: '秋',
+  winter: '冬'
+};
+
+export function setupInteractions(scene, markerGroup, camera, controls, uiState, island, onSpotSelected) {
   const titleNode = document.getElementById('title');
   const descriptionNode = document.getElementById('description');
   const detailNode = document.getElementById('spot-detail');
@@ -10,8 +17,8 @@ export function setupInteractions(scene, markerGroup, camera, controls, uiState,
   const pointer = new THREE.Vector2();
 
   function updateInfo(spot) {
-    titleNode.textContent = `${spot.name} – 旅の見どころ`;
-    descriptionNode.textContent = `${spot.description} ${spot.mood}`;
+    titleNode.textContent = `${spot.name} — ${SEASON_LABELS[uiState.season]}の見どころ`;
+    descriptionNode.textContent = spot.seasonalHighlights[uiState.season];
     detailNode.textContent = spot.fact;
     uiState.currentSpot = spot;
 
@@ -59,6 +66,7 @@ export function setupInteractions(scene, markerGroup, camera, controls, uiState,
       if (marker) {
         updateInfo(marker);
         focusOnSpot(marker, true);
+        onSpotSelected(marker);
       }
     }
   });

@@ -291,10 +291,10 @@ export function createRailwayWithTrain(scene) {
     emissive: 0x26373b,
     emissiveIntensity: 0.2
   });
-  let railCurve;
-
-  RAIL_ROUTES.forEach((route, routeIndex) => {
+  const routeCurves = [];
+  RAIL_ROUTES.forEach((route) => {
     const curve = createRouteCurve(route.coordinates, 3.22);
+    routeCurves.push({ name: route.name, curve, stationIds: route.stationIds });
     const sleeperCount = Math.ceil(curve.getLength() / 0.72);
     const sleepers = new THREE.InstancedMesh(sleeperGeometry, sleeperMaterial, sleeperCount);
     const sleeper = new THREE.Object3D();
@@ -324,10 +324,6 @@ export function createRailwayWithTrain(scene) {
       const rail = new THREE.Mesh(new THREE.TubeGeometry(railCurve, 100, 0.045, 6, false), railMaterial);
       railGroup.add(rail);
     });
-
-    if (routeIndex === 0) {
-      railCurve = curve;
-    }
   });
 
   scene.add(railGroup);
@@ -345,11 +341,12 @@ export function createRailwayWithTrain(scene) {
   train.castShadow = true;
   scene.add(train);
 
+  const railCurve = routeCurves[0].curve;
   const trainPos = railCurve.getPoint(0);
   train.position.copy(trainPos);
   train.position.y += 0.8;
 
-  return { train, railCurve };
+  return { train, routeCurves };
 }
 
 export function createBusRoutes(scene) {

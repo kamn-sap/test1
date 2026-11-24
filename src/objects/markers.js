@@ -4,6 +4,7 @@ export function createMarkers(markerGroup, spots) {
   const markerMeshes = [];
 
   spots.forEach((spot) => {
+    const isStation = spot.type === 'station';
     const holder = new THREE.Group();
 
     const pin = new THREE.Mesh(
@@ -78,7 +79,9 @@ export function createMarkers(markerGroup, spots) {
 
     const label = new THREE.Sprite(labelMat);
     label.position.set(0, 9.4, 0);
-    label.scale.set(9.5, 9.5, 1);
+    const labelSize = isStation ? 5.5 : 9.5;
+    label.scale.set(labelSize, labelSize, 1);
+    if (isStation) holder.scale.setScalar(0.58);
     holder.add(label);
 
     holder.position.copy(spot.position);

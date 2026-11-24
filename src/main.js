@@ -15,6 +15,7 @@ import {
 import { setupLights } from './objects/lights.js';
 import { createMarkers } from './objects/markers.js';
 import { setupInteractions } from './interactions/handlers.js';
+import { setupTrainControls } from './interactions/train-controls.js';
 import { updateStats } from './utils/stats.js';
 
 const canvas = document.createElement('canvas');
@@ -75,8 +76,9 @@ const markerGroup = new THREE.Group();
 scene.add(markerGroup);
 const markerMeshes = createMarkers(markerGroup, HOKKAIDO_SPOTS);
 
-const { train, railCurve } = createRailwayWithTrain(scene);
+const { train, routeCurves } = createRailwayWithTrain(scene);
 createBusRoutes(scene);
+document.getElementById('marker-count').textContent = `駅・見どころ: ${HOKKAIDO_SPOTS.length}`;
 
 const SEASON_PRESETS = {
   spring: {
@@ -122,14 +124,29 @@ const uiState = {
   currentSpot: HOKKAIDO_SPOTS[0]
 };
 
+let moveTrainToStop;
 const { updateInfo, focusOnSpot } = setupInteractions(
   scene,
   markerGroup,
   camera,
   controls,
   uiState,
-  island
+  island,
+  (spot) => moveTrainToStop(spot)
 );
+const trainControls = setupTrainControls(
+  renderer.domElement,
+  camera,
+  controls,
+  train,
+  routeCurves,
+  HOKKAIDO_SPOTS,
+  (spot) => {
+    updateInfo(spot);
+    focusOnSpot(spot, true);
+  }
+);
+moveTrainToStop = trainControls.moveToStop;
 
 function setSeason(seasonName) {
   const preset = SEASON_PRESETS[seasonName];
@@ -161,12 +178,15 @@ function setSeason(seasonName) {
   document.querySelectorAll('.season-btn').forEach((btn) => {
     btn.classList.toggle('active', btn.dataset.season === seasonName);
   });
+  updateInfo(uiState.currentSpot);
 }
 
 const resetBtn = document.getElementById('resetBtn');
 const seasonButtons = [...document.querySelectorAll('.season-btn')];
 
 resetBtn.addEventListener('click', () => {
+  trainControls.moveToStop(HOKKAIDO_SPOTS[0]);
+  updateInfo(HOKKAIDO_SPOTS[0]);
   camera.position.set(35, 32, 90);
   controls.target.set(0, 5, 0);
   controls.update();
@@ -297,24 +317,10 @@ function animateParticles() {
   }
 }
 
-function animateTrain() {
-  const t = clock.getElapsedTime();
-  const progress = (t * 0.15) % 1; // ゆっくり移動
-
-  const trainPos = railCurve.getPoint(progress);
-  train.position.copy(trainPos);
-  train.position.y += 0.8;
-
-  // 進行方向に向かせる
-  const nextPos = railCurve.getPoint(Math.min(progress + 0.01, 1));
-  train.lookAt(nextPos);
-}
-
 function animate() {
   requestAnimationFrame(animate);
 
   animateParticles();
-  animateTrain();
 
   markerMeshes.forEach((marker, index) => {
     const t = clock.getElapsedTime();

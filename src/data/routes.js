@@ -1,22 +1,27 @@
 export const RAIL_ROUTES = [
   {
     name: '札幌・小樽・ニセコ',
+    stationIds: ['sapporo', 'otaru', 'kutchan', 'niseko'],
     coordinates: [[141.3545, 43.0621], [140.9944, 43.1907], [140.75, 42.9], [140.6845, 42.8048]]
   },
   {
     name: '札幌・滝川・富良野',
+    stationIds: ['sapporo', 'iwamizawa', 'takikawa', 'furano'],
     coordinates: [[141.3545, 43.0621], [141.76, 43.2], [141.91, 43.56], [142.457, 43.342]]
   },
   {
     name: '札幌・帯広・釧路',
+    stationIds: ['sapporo', 'minami-chitose', 'shintoku', 'obihiro', 'kushiro'],
     coordinates: [[141.3545, 43.0621], [141.68, 42.82], [142.83, 43.08], [143.2, 42.92], [144.38, 42.985]]
   },
   {
     name: '札幌・旭川・網走',
+    stationIds: ['sapporo', 'asahikawa', 'engaru', 'kitami', 'abashiri'],
     coordinates: [[141.3545, 43.0621], [142.365, 43.77], [143.52, 44.06], [143.89, 43.8], [144.27, 44.02]]
   },
   {
     name: '札幌・洞爺湖',
+    stationIds: ['sapporo', 'minami-chitose', 'tomakomai', 'muroran', 'oshamambe', 'toyako'],
     coordinates: [[141.3545, 43.0621], [141.68, 42.82], [141.6, 42.64], [141.0, 42.35], [140.27, 42.51], [140.77, 42.55]]
   }
 ];
