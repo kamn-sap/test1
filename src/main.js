@@ -9,7 +9,8 @@ import {
   createSalmonJump,
   createPotatoHarvest,
   createSnowCrystals,
-  createRailwayWithTrain
+  createRailwayWithTrain,
+  createBusRoutes
 } from './objects/geometry.js';
 import { setupLights } from './objects/lights.js';
 import { createMarkers } from './objects/markers.js';
@@ -56,8 +57,7 @@ controls.maxDistance = 200;
 controls.maxPolarAngle = Math.PI * 0.52;
 controls.minPolarAngle = Math.PI * 0.12;
 controls.target.set(0, 5, 0);
-controls.autoRotate = true;
-controls.autoRotateSpeed = 0.35;
+controls.autoRotate = false;
 
 setupLights(scene);
 
@@ -75,7 +75,8 @@ const markerGroup = new THREE.Group();
 scene.add(markerGroup);
 const markerMeshes = createMarkers(markerGroup, HOKKAIDO_SPOTS);
 
-const { rail, train, railCurve } = createRailwayWithTrain(scene, HOKKAIDO_SPOTS);
+const { train, railCurve } = createRailwayWithTrain(scene);
+createBusRoutes(scene);
 
 const SEASON_PRESETS = {
   spring: {
@@ -302,7 +303,7 @@ function animateTrain() {
 
   const trainPos = railCurve.getPoint(progress);
   train.position.copy(trainPos);
-  train.position.y += 1;
+  train.position.y += 0.8;
 
   // 進行方向に向かせる
   const nextPos = railCurve.getPoint(Math.min(progress + 0.01, 1));

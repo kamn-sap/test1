@@ -193,6 +193,49 @@ p {
   letter-spacing: 0.05em;
 }
 
+.route-legend {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 7px 14px;
+  margin-top: 8px;
+  padding: 10px 12px;
+  width: fit-content;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.72rem;
+  pointer-events: none;
+}
+
+.route-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.route-legend small {
+  grid-column: 1 / -1;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.65rem;
+}
+
+.route-key {
+  display: inline-block;
+  width: 20px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.route-key.railway {
+  background: linear-gradient(180deg, #d6e5e8 0 35%, #55483b 35% 65%, #d6e5e8 65%);
+}
+
+.route-key.bus {
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #56e0d1 0 4px, transparent 4px 7px);
+}
+
 #fps {
   font-family: "Courier New", monospace;
   font-weight: 700;

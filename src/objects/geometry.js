@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { HOKKAIDO_BOUNDARY } from '../data/hokkaido-boundary.js';
+import { BUS_ROUTES, RAIL_ROUTES } from '../data/routes.js';
+import { geoToMap } from '../utils/geo.js';
 
 // 背景として海を作成（北海道を囲む大きな海）
 export function createOceanBackground(scene) {
@@ -60,29 +62,26 @@ export function createIsland(scene) {
     clearcoat: 0.4,
     clearcoatRoughness: 0.8
   });
-  const toMap = ([lon, lat]) => new THREE.Vector2((lon - 143) * 8, -(lat - 43.5) * 8);
-
   HOKKAIDO_BOUNDARY.forEach((polygon) => {
     const shape = new THREE.Shape();
     polygon[0].forEach((point, index) => {
-      const p = toMap(point);
-      if (index === 0) shape.moveTo(p.x, p.y);
-      else shape.lineTo(p.x, p.y);
+      const { x, z } = geoToMap(point);
+      if (index === 0) shape.moveTo(x, -z);
+      else shape.lineTo(x, -z);
     });
 
     for (let ringIndex = 1; ringIndex < polygon.length; ringIndex++) {
       const hole = new THREE.Path();
       polygon[ringIndex].forEach((point, index) => {
-        const p = toMap(point);
-        if (index === 0) hole.moveTo(p.x, p.y);
-        else hole.lineTo(p.x, p.y);
+        const { x, z } = geoToMap(point);
+        if (index === 0) hole.moveTo(x, -z);
+        else hole.lineTo(x, -z);
       });
       shape.holes.push(hole);
     }
 
     const geometry = new THREE.ExtrudeGeometry(shape, { depth: 5, bevelEnabled: false });
     geometry.rotateX(-Math.PI / 2);
-    geometry.translate(0, 0, 0);
     const mesh = new THREE.Mesh(geometry, islandMat);
     mesh.position.y = -2;
     mesh.castShadow = true;
@@ -272,32 +271,66 @@ export function createSnowCrystals(scene) {
   return particles;
 }
 
-// 線路と電車
-export function createRailwayWithTrain(scene, spots) {
-  const railPoints = [
-    spots[0].position,
-    spots[1].position,
-    spots[4].position,
-    spots[2].position,
-    spots[3].position,
-    spots[5].position
-  ];
+function createRouteCurve(coordinates, elevation) {
+  const points = coordinates.map((coordinate) => geoToMap(coordinate, elevation));
+  return new THREE.CatmullRomCurve3(points, false, 'centripetal');
+}
 
-  const railCurve = new THREE.CatmullRomCurve3(railPoints);
-
-  // 線路
-  const railGeometry = new THREE.TubeGeometry(railCurve, 250, 0.28, 8, false);
+// 北海道の主要路線を位置模式図として描画
+export function createRailwayWithTrain(scene) {
+  const railGroup = new THREE.Group();
+  const sleeperGeometry = new THREE.BoxGeometry(0.82, 0.12, 0.2);
+  const sleeperMaterial = new THREE.MeshStandardMaterial({
+    color: 0x55483b,
+    roughness: 0.9
+  });
   const railMaterial = new THREE.MeshStandardMaterial({
-    color: 0x8b6f47,
-    emissive: 0x3d2817,
-    emissiveIntensity: 0.25,
-    roughness: 0.85
+    color: 0xb9cbd0,
+    metalness: 0.72,
+    roughness: 0.32,
+    emissive: 0x26373b,
+    emissiveIntensity: 0.2
+  });
+  let railCurve;
+
+  RAIL_ROUTES.forEach((route, routeIndex) => {
+    const curve = createRouteCurve(route.coordinates, 3.22);
+    const sleeperCount = Math.ceil(curve.getLength() / 0.72);
+    const sleepers = new THREE.InstancedMesh(sleeperGeometry, sleeperMaterial, sleeperCount);
+    const sleeper = new THREE.Object3D();
+
+    for (let index = 0; index < sleeperCount; index++) {
+      const t = (index + 0.5) / sleeperCount;
+      const point = curve.getPointAt(t);
+      const tangent = curve.getTangentAt(t);
+      sleeper.position.copy(point);
+      sleeper.rotation.set(0, Math.atan2(tangent.x, tangent.z), 0);
+      sleeper.updateMatrix();
+      sleepers.setMatrixAt(index, sleeper.matrix);
+    }
+
+    sleepers.instanceMatrix.needsUpdate = true;
+    railGroup.add(sleepers);
+
+    [-0.2, 0.2].forEach((offset) => {
+      const railCurve = new THREE.CatmullRomCurve3(
+        curve.getPoints(100).map((point, index, points) => {
+          const tangent = curve.getTangent(index / (points.length - 1));
+          return point.clone().add(new THREE.Vector3(-tangent.z, 0, tangent.x).normalize().multiplyScalar(offset));
+        }),
+        false,
+        'centripetal'
+      );
+      const rail = new THREE.Mesh(new THREE.TubeGeometry(railCurve, 100, 0.045, 6, false), railMaterial);
+      railGroup.add(rail);
+    });
+
+    if (routeIndex === 0) {
+      railCurve = curve;
+    }
   });
 
-  const rail = new THREE.Mesh(railGeometry, railMaterial);
-  rail.castShadow = true;
-  rail.receiveShadow = true;
-  scene.add(rail);
+  scene.add(railGroup);
 
   // 電車（小さなボックス）
   const trainGeometry = new THREE.BoxGeometry(0.7, 0.9, 1.4);
@@ -312,10 +345,34 @@ export function createRailwayWithTrain(scene, spots) {
   train.castShadow = true;
   scene.add(train);
 
-  // 電車の初期位置
   const trainPos = railCurve.getPoint(0);
   train.position.copy(trainPos);
-  train.position.y += 1;
+  train.position.y += 0.8;
 
-  return { rail, train, railCurve };
+  return { train, railCurve };
+}
+
+export function createBusRoutes(scene) {
+  const routeGroup = new THREE.Group();
+  const material = new THREE.LineDashedMaterial({
+    color: 0x56e0d1,
+    dashSize: 0.85,
+    gapSize: 0.48,
+    transparent: true,
+    opacity: 0.9
+  });
+
+  BUS_ROUTES.forEach((route) => {
+    const curve = createRouteCurve(route.coordinates, 3.48);
+    const line = new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(curve.getPoints(100)),
+      material
+    );
+    line.computeLineDistances();
+    line.userData.routeName = route.name;
+    routeGroup.add(line);
+  });
+
+  scene.add(routeGroup);
+  return routeGroup;
 }
